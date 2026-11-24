@@ -7,7 +7,6 @@ import { timer } from "./Timer.js";
 const p = new Player({
     pos: [100, 100],
     size: [40, 40],
-    color: "red",
 });
 
 const r = new Rectangle({
@@ -22,12 +21,18 @@ const s = new Rectangle({
     color: "blue"
 });
 
-const objects = [p, r, s];
+const b = new Box({
+    pos: [500, 500],
+    size: [10, 100],
+    color: "orange"
+});
+
+const objects = [p, r, s, b];
 
 timer.update = (deltaTime) => {
-    clearCanvas();
     objects.forEach(obj => obj.update(deltaTime, objects));
     objects.forEach(obj => obj.draw());
+    clearCanvas();
 };
 
 timer.start();

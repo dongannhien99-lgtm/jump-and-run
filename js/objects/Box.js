@@ -2,9 +2,9 @@ import { Rectangle } from "./Rectangle.js";
 import { levelSize } from "./Level.js"
 
 export class Box extends Rectangle {
-    constructor(options) {
+    constructor(options, type) {
         const { pos, size, color, grav, friction, vel } = options;
-        super({ pos, size, color });
+        super({ pos, size, color }, type || "Box");
         this.grav = grav || 0.005;
         this.friction = friction || 0;
         this.vel = vel || [0, 0];
@@ -53,23 +53,26 @@ export class Box extends Rectangle {
     collideWith(obj) {
         return {
             fromAbove: () => {
-                console.log("Kollision von oben mit:", obj);
+                if (this.prevBottom <= obj.top && this.overlapsWith(obj)) {
+                    this.setBottom(obj.top);
+                    this.vel[1] = 0;
+                    this.onGround = true;
+                }
             },
             fromBelow: () => {
-                console.log("Kollision von unten mit:", obj);
+                if (this.prevTop >= obj.bottom && this.overlapsWith(obj)) {
+                    this.setTop(obj.bottom);
+                    this.vel[1] = 0;
+                }
             },
             fromLeft: () => {
-                if( this.prevRight <= obj.left &&
-                    this.overlapsWith(obj)
-                ) {
+                if (this.prevRight <= obj.left && this.overlapsWith(obj)) {
                     this.setRight(obj.left);
                     this.vel[0] = 0;
                 }
             },
             fromRight: () => {
-                if( this.prevLeft <= obj.right &&
-                    this.overlapsWith(obj)
-                ) {
+                if (this.prevLeft >= obj.right && this.overlapsWith(obj)) {
                     this.setLeft(obj.right);
                     this.vel[0] = 0;
                 }
